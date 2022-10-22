@@ -6,7 +6,15 @@ MENU = """
 1. Add matrices
 2. Multiply matrix by a constant
 3. Multiply matrices
+4. Transpose matrix
 0. Exit
+"""
+
+MENU_T = """
+1. Main diagonal
+2. Side diagonal
+3. Vertical line
+4. Horizontal line
 """
 
 def read_matrix(num):
@@ -67,6 +75,27 @@ def do_mul_k():
     print('The result is:')
     print_matrix(k_matrix(arr, k))
 
+def trans_matrix(arr, cmd):
+    n = arr.shape[0]
+    arr_new = arr.copy()
+    for i in range(n):
+        for j in range(n):
+            if cmd == 1:
+                arr_new[i, j] = arr[j, i]
+            elif cmd == 2:
+                arr_new[i, j] = arr[n-j-1, n-i-1]
+            elif cmd == 3:
+                arr_new[i, j] = arr[i, n-j-1]
+            elif cmd == 4:
+                arr_new[i, j] = arr[n-i-1, j]
+    return arr_new
+
+def do_trans():
+    print(MENU_T)
+    cmd = int(input('Your choice: '))
+    arr = read_matrix(0)
+    print_matrix(trans_matrix(arr, cmd))
+
 def menu():
     while True:
         print(MENU)
@@ -79,6 +108,8 @@ def menu():
             do_mul_k()
         elif cmd == 3:
             do_mul_2()
+        elif cmd == 4:
+            do_trans()
         else:
             print('Wrong choice!')
     return
