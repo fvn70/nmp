@@ -1,4 +1,5 @@
 from array import array
+from math import floor
 
 import numpy as np
 
@@ -8,6 +9,7 @@ MENU = """
 3. Multiply matrices
 4. Transpose matrix
 5. Calculate a determinant
+6. Inverse matrix
 0. Exit
 """
 
@@ -35,7 +37,7 @@ def read_matrix(num):
     return arr
 
 def print_matrix(arr):
-    for i in range(arr.shape[0]):
+    for i in range(len(arr)):
         s = ' '.join([str(v) for v in arr[i]])
         print(s)
 
@@ -111,9 +113,34 @@ def det_matrix(m):
         det += ((-1)**c) * m[0][c] * det_matrix(get_minor(m, 0, c))
     return det
 
+def inv_matrix(m):
+    det = det_matrix(m)
+    #special case for 2x2 matrix:
+    if len(m) == 2:
+        return [[m[1][1]/det, -1*m[0][1]/det],
+                [-1*m[1][0]/det, m[0][0]/det]]
+    #find matrix of cofactors
+    cof = []
+    for r in range(len(m)):
+        cof_row = []
+        for c in range(len(m)):
+            mr = get_minor(m, r, c)
+            cof_row.append(((-1)**(r+c)) * det_matrix(mr))
+        cof.append(cof_row)
+    cof = trans_matrix(np.array(cof), 1).tolist()
+    for r in range(len(cof)):
+        for c in range(len(cof)):
+            cof[r][c] = cof[r][c]/det
+    return cof
+
 def do_det():
     arr = read_matrix(0).tolist()
     print('The result is:\n', det_matrix(arr))
+
+def do_inv():
+    arr = read_matrix(0).tolist()
+    print('The result is:')
+    print_matrix(inv_matrix(arr))
 
 def menu():
     while True:
@@ -131,6 +158,8 @@ def menu():
             do_trans()
         elif cmd == 5:
             do_det()
+        elif cmd == 6:
+            do_inv()
         else:
             print('Wrong choice!')
     return
