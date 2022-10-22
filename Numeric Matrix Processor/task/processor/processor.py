@@ -7,6 +7,7 @@ MENU = """
 2. Multiply matrix by a constant
 3. Multiply matrices
 4. Transpose matrix
+5. Calculate a determinant
 0. Exit
 """
 
@@ -96,6 +97,24 @@ def do_trans():
     arr = read_matrix(0)
     print_matrix(trans_matrix(arr, cmd))
 
+def get_minor(m,i,j):
+    return [row[:j] + row[j+1:] for row in (m[:i]+m[i+1:])]
+
+def det_matrix(m):
+    #base case for 2x2 matrix
+    if len(m) == 1:
+        return m[0][0]
+    if len(m) == 2:
+        return m[0][0] * m[1][1] - m[0][1] * m[1][0]
+    det = 0
+    for c in range(len(m)):
+        det += ((-1)**c) * m[0][c] * det_matrix(get_minor(m, 0, c))
+    return det
+
+def do_det():
+    arr = read_matrix(0).tolist()
+    print('The result is:\n', det_matrix(arr))
+
 def menu():
     while True:
         print(MENU)
@@ -110,6 +129,8 @@ def menu():
             do_mul_2()
         elif cmd == 4:
             do_trans()
+        elif cmd == 5:
+            do_det()
         else:
             print('Wrong choice!')
     return
